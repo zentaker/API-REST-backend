@@ -1,31 +1,37 @@
-const express = require('express');
 require('dotenv').config();
-const {dbConection} = require('./db/config');
-const cors = require('cors');
-//middlewares
-//funciones que se ejecutan antes de otras
-//la informacion llege como uno lo espera
 
-//crear el servidor express
+const express = require('express');
+const cors = require('cors');
+
+const { dbConnection } = require('./database/config');
+
+// Crear el servidor de express
 const app = express();
 
-//configurar cors
-app.use(cors());
+// Configurar CORS
+app.use( cors() );
 
-//lectura y parseo de body
-app.use(express.json());
+// Lectura y parseo del body
+app.use( express.json() );
 
-console.log(process.env.PORT)
+// Base de datos
+dbConnection();
 
-//base de datos
-dbConection();
+// Directorio público
+app.use( express.static('public') );
 
-// emviar com un routing
-app.use('/api/usuarios',require('./routes/usuarios.routes') );
-app.use('/api/login',require('./routes/auth.routes') );
 
-app.listen(process.env.PORT, () =>{
-    console.log('servidor corriendo en puerto ' + process.env.PORT)
-})
+// Rutas
+app.use( '/api/usuarios', require('./routes/usuarios') );
+app.use( '/api/hospitales', require('./routes/hospitales') );
+app.use( '/api/medicos', require('./routes/medicos') );
+app.use( '/api/todo', require('./routes/busquedas') );
+app.use( '/api/login', require('./routes/auth') );
+app.use( '/api/upload', require('./routes/uploads') );
 
+
+
+app.listen( process.env.PORT, () => {
+    console.log('Servidor corriendo en puerto ' + process.env.PORT );
+});
 
